@@ -1,16 +1,18 @@
 import supabase from "../../config/supabase.js";
 
 
-export async function getSignedUrlFromSupabase(fileName) {
+export async function getSignedUrlFromSupabase(fileName, durationInSeconds) {
+
+    const fileFullName = `temp/${fileName}.wav`;
     
     const { data, error } = await supabase.storage
-        .from("audiofiles")
-        .createSignedUrl(`${fileName}.wav`, 60);
+        .from(process.env.PARKVIEW_STORAGE_BUCKET)
+        .createSignedUrl(fileFullName, durationInSeconds);
 
     if (error) {
         console.error("Error generating signed URL: ", error);
         return null;
     }
 
-    return data.signedURL;
+    return data.signedUrl;
 }

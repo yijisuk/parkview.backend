@@ -9,7 +9,7 @@ import { getSignedUrlFromSupabase } from "../../../agents/supabaseFunctions.js";
  */
 export async function processVoiceQuery(audioFileName) {
 
-    const audioFileURL = await getSignedUrlFromSupabase(audioFileName);
+    const audioFileURL = await getSignedUrlFromSupabase(audioFileName, 60);
 
     try {
         const audioResponse = await axios.get(audioFileURL, {

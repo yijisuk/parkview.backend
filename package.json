@@ -2,10 +2,10 @@
   "name": "parkview.backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/test.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "start": "node -r dotenv/config src/test.js",
+    "start": "node -r dotenv/config src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
   },
@@ -15,6 +15,8 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.38.2",
     "axios": "^1.5.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "expo-constants": "^14.4.2",
     "express": "^4.18.2",

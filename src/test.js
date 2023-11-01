@@ -1,25 +1,30 @@
 import { SearchParkingSlots } from "./apis/non_view_integration/process_parking_slots/searchParkingSlots.js";
 import { getCoordinatesFromAddress } from "./agents/alternativeGeocoding.js";
-import { processVoiceQuery } from "./apis/view_integration/recommend_parking_slots/userQueryFormat.js";
+import { processVoiceQueryToText } from "./apis/view_integration/recommend_parking_slots/userQueryFormat.js";
+import { extractDestinationFromQuery } from "./apis/view_integration/recommend_parking_slots/userQueryFormat.js";
 import { getSignedUrlFromSupabase } from "./agents/supabaseFunctions.js";
 import { getCoordinates, getRoutes } from "./agents/googleMaps.js";
 
 // test 1
 // const searchAddress = "National University of Singapore";
 
-// const coordinates = await getCoordinatesFromAddress(searchAddress);
-// console.log(coordinates);
+// const gMapsCoordinates = await getCoordinates(searchAddress);
+// const alterMapsCoordinates = await getCoordinatesFromAddress(searchAddress);
+
+// console.log("Google Maps: ", gMapsCoordinates);
+// console.log("Alternative Maps: ", alterMapsCoordinates);
 
 // test 2
 // const searchParkingSlots = new SearchParkingSlots(searchAddress);
+// const parkingSlots = await searchParkingSlots.processPipeline();
 
-// const testSlots = await searchParkingSlots.processPipeline();
-// console.log(testSlots);
+// const firstSlot = parkingSlots[0];
+// console.log(firstSlot);
 
 // test 3
-// const name = "jfk";
+// const name = "harvard";
 
-// processVoiceQuery(name).then((response) => {
+// processVoiceQueryToText(name).then((response) => {
 //     console.log(JSON.stringify(response));
 // });
 
@@ -31,9 +36,18 @@ import { getCoordinates, getRoutes } from "./agents/googleMaps.js";
 // console.log(signedURL);
 
 // test 5
-const origin = await getCoordinates("Nanyang Technological University");
-const destination = await getCoordinates("National University of Singapore");
+// const origin = await getCoordinates("Nanyang Technological University");
+// const destination = await getCoordinates("National University of Singapore");
 
-const route = await getRoutes(origin, destination);
+// const route = await getRoutes(origin, destination);
 
-console.log(route);
+// console.log(route);
+
+// test 6
+// const test = await extractDestinationFromQuery("Hello there, ");
+// console.log(test);
+
+// test 7
+const query = "Hello there, I would like to go to National University of Singapore."
+const response = await extractDestinationFromQuery("gpt-3.5", query);
+console.log(response);

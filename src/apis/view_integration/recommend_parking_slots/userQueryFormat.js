@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getSignedUrlFromSupabase } from "../../../agents/supabaseFunctions.js";
+import OpenAI from "openai";
 
 
 /**
@@ -7,7 +8,7 @@ import { getSignedUrlFromSupabase } from "../../../agents/supabaseFunctions.js";
  * @param {string} audioFileName - name of the audio file to be processed
  * @returns {string} - Returns the transcribed text of the audio file
  */
-export async function processVoiceQuery(audioFileName) {
+export async function processVoiceQueryToText(audioFileName) {
 
     const audioFileURL = await getSignedUrlFromSupabase(audioFileName, 60);
 
@@ -42,5 +43,65 @@ export async function processVoiceQuery(audioFileName) {
     } catch (error) {
         console.log(error);
         return null;
+    }
+}
+
+
+export async function extractDestinationFromQuery(model, query) {
+
+    try {
+        // Validate model
+        let useModel;
+        if (model === "gpt-3.5") {
+            useModel = "gpt-3.5-turbo";
+        } else if (model === "gpt-4") {
+            useModel = "gpt-4";
+        } else {
+            throw new Error("Invalid model specified.");
+        }
+
+        // Validate query
+        if (!query || typeof query !== "string" || query.trim().length === 0) {
+            throw new Error("Invalid query specified.");
+        }
+
+        const openai = new OpenAI({
+            apiKey: process.env.OPENAI_API_KEY,
+        });
+
+        // Call OpenAI API
+        const completion = await openai.chat.completions.create({
+            messages: [
+                {
+                    role: "system",
+                    content:
+                        "You assist the user's search of nearby parking slots.",
+                },
+                {
+                    role: "user",
+                    content: `Extract the user's destination from the given context. Only return the address; no extra words or punctuations: '${query}'`,
+                },
+            ],
+            model: useModel,
+        });
+
+        const destination = completion.choices[0].message.content;
+
+        // Validate extracted destination
+        if (
+            !destination ||
+            typeof destination !== "string" ||
+            destination.trim().length === 0
+        ) {
+            throw new Error(
+                "Failed to extract a valid destination from the query."
+            );
+        }
+
+        return destination;
+
+    } catch (error) {
+        console.error("Error in extractDestinationFromQuery:", error);
+        throw error;
     }
 }

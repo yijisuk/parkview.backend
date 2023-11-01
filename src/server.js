@@ -3,6 +3,8 @@ import https from "https";
 import bodyParser from 'body-parser'
 import fs from "fs";
 import cors from "cors";
+import { processVoiceQueryToText, extractDestinationFromQuery } from "./apis/view_integration/recommend_parking_slots/userQueryFormat.js";
+import { SearchParkingSlots } from "./apis/non_view_integration/process_parking_slots/searchParkingSlots.js";
 import { getCoordinates, getRoutes } from "./agents/googleMaps.js";
 import { getFavouriteLocation, checkFavouriteLocation, addFavouriteLocation, deleteFavouriteLocation }from "./apis/view_integration/favourite_location/favouriteManager.js";
 
@@ -12,6 +14,42 @@ const PORT = 3000;
 
 
 app.use(cors());
+
+// APIs for Voice Query Processing
+// GET: /processVoiceQuery
+app.get("/processVoiceQuery", async (req, res) => {
+    try {
+        const { audioFileName } = req.query;
+
+        if (!audioFileName) {
+            return res
+                .status(400)
+                .json({ error: "Missing 'audioFileName' parameter in query." });
+        }
+
+        const response = await processVoiceQueryToText(audioFileName);
+
+        if (!response) {
+            return res
+                .status(404)
+                .json({ error: "Failed to process voice query to text." });
+        }
+
+        const destination = await extractDestinationFromQuery("gpt-3.5", response);
+
+        if (!destination) {
+            return res
+                .status(404)
+                .json({ error: "Failed to extract destination from query." });
+        }
+
+        return res.status(200).json({ destination });
+    } catch (error) {
+        console.error("Error in /processVoiceQuery:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 
 
 // APIs for Route Searching
@@ -69,6 +107,33 @@ app.get("/getRoutes", async (req, res) => {
         return res
             .status(500)
             .json({ error: "Internal Server Error. Please try again later." });
+    }
+});
+
+
+app.get("/getParkingCoordinates", async (req, res) => {
+
+    try {
+        const { destinationAddress } = req.query;
+
+        if (!destinationAddress) {
+            return res
+                .status(400)
+                .json({ error: "Destination address is required." });
+        }
+
+        const searchParkingSlots = new SearchParkingSlots(destinationAddress);
+        const parkingSlots = await searchParkingSlots.processPipeline();
+
+        if (!parkingSlots || parkingSlots.length === 0) {
+            return res.status(404).json({ error: "No parking slots found." });
+        }
+
+        const firstSlot = parkingSlots[0];
+        return res.status(200).json({ firstSlot });
+    } catch (error) {
+        console.error("Error in /getParkingCoordinates:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
     }
 });
 

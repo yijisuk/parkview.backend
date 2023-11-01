@@ -8,11 +8,39 @@ import OpenAI from "openai";
  * @param {string} audioFileName - name of the audio file to be processed
  * @returns {string} - Returns the transcribed text of the audio file
  */
-export async function processVoiceQueryToText(audioFileName) {
+export async function processVoiceQueryToText(uid, audioFileName) {
 
-    const audioFileURL = await getSignedUrlFromSupabase(audioFileName, 60);
+    // let retries = 5;
+    // const delay = 2000;
+
+    // const getAudioFileURLWithRetry = async () => {
+    //     while (retries > 0) {
+    //         try {
+    //             const audioFileURL = await getSignedUrlFromSupabase(audioFileName, 60);
+    //             return audioFileURL;
+
+    //         } catch (error) {
+
+    //             retries--;
+    //             if (retries <= 0) {
+    //                 throw new Error("Max retries reached, could not get signed URL");
+    //             }
+    //             console.log(`Retrying to get signed URL... (${retries} attempts remaining)`);
+    //             await new Promise((resolve) => setTimeout(resolve, delay));
+    //         }
+    //     }
+    // };
+
+    // let audioFileURL;
+
+    // try {
+    //     audioFileURL = await getAudioFileURLWithRetry();
+    // } catch (error) {
+    //     console.error("Failed to get signed URL:", error);
+    // }
 
     try {
+        const audioFileURL = await getSignedUrlFromSupabase(uid, audioFileName, 60);
         const audioResponse = await axios.get(audioFileURL, {
             responseType: "arraybuffer",
         });

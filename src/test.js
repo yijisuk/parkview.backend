@@ -48,6 +48,17 @@ import { getCoordinates, getRoutes } from "./agents/googleMaps.js";
 // console.log(test);
 
 // test 7
-const query = "Hello there, I would like to go to National University of Singapore."
-const response = await extractDestinationFromQuery("gpt-3.5", query);
-console.log(response);
+// const query = "Hello there, I would like to go to National University of Singapore."
+// const response = await extractDestinationFromQuery("gpt-3.5", query);
+// console.log(response);
+
+// test 8
+// const fileName = "8688eac8-b231-4f4a-ab9a-6b5ed92278f2/audio-qiyrl8d6tfl.m4a";
+const id = "8688eac8-b231-4f4a-ab9a-6b5ed92278f2";
+const fileName = "rec-7kztxkg8hn8.m4a";
+// const fileName = "harvard";
+const result = await processVoiceQueryToText(id, fileName);
+console.log(result);
+
+// const url = await getSignedUrlFromSupabase(id, fileName, 60);
+// console.log(url);

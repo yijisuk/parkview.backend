@@ -19,15 +19,15 @@ app.use(cors());
 // GET: /processVoiceQuery
 app.get("/processVoiceQuery", async (req, res) => {
     try {
-        const { audioFileName } = req.query;
+        const { uid, audioFileName } = req.query;
 
-        if (!audioFileName) {
+        if (!uid || !audioFileName) {
             return res
                 .status(400)
                 .json({ error: "Missing 'audioFileName' parameter in query." });
         }
 
-        const response = await processVoiceQueryToText(audioFileName);
+        const response = await processVoiceQueryToText(uid, audioFileName);
 
         if (!response) {
             return res

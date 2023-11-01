@@ -4,7 +4,7 @@ import bodyParser from 'body-parser'
 import fs from "fs";
 import cors from "cors";
 import { getCoordinates, getRoutes } from "./agents/googleMaps.js";
-import { getFavouriteLocation, addFavouriteLocation, deleteFavouriteLocation }from "./apis/view_integration/favourite_location/favouriteManager.js";
+import { getFavouriteLocation, checkFavouriteLocation, addFavouriteLocation, deleteFavouriteLocation }from "./apis/view_integration/favourite_location/favouriteManager.js";
 
 const app = express();
 const jsonParser = bodyParser.json();
@@ -107,9 +107,9 @@ app.get("/getCoordinates", async (req, res) => {
 
 // APIs for managing favorite locations
 // GET: Get Fav Location
-app.get("/favouriteLocation", jsonParser, async(req, res) => {
+app.get("/getFavouriteLocation", jsonParser, async(req, res) => {
 	
-	try{
+	try {
 		//console.log(req.query);
 		if (!req.query["id"]){
 			return res.status(400).json({error: "Missing user ID."})
@@ -126,13 +126,38 @@ app.get("/favouriteLocation", jsonParser, async(req, res) => {
 		.json({ error: "Internal Server Error. Please try again later." });
 
 	}
+});
 
 
+// GET: Check Fav Location
+app.get("/checkFavouriteLocation", jsonParser, async(req, res) => {
+
+	try {
+		//console.log(req.query);
+		if (!req.query["id"]){
+			return res.status(400).json({error: "Missing user ID."})
+		}
+
+		if (!req.query["location"]){
+			return res.status(401).json({error: "Missing location."})
+		}
+
+		const isFavourite = await checkFavouriteLocation(req.query.id, req.query.location);
+
+		return res.status(200).json({data: isFavourite});
+
+	} catch (error) {
+
+		console.error(`Internal Server Error: ${error}`);
+		return res
+		.status(500)
+		.json({ error: "Internal Server Error. Please try again later." });
+	}
 });
 
 
 // POST: Add fav location
-app.post("/favouriteLocation", jsonParser, async(req, res) => {
+app.post("/addFavouriteLocation", jsonParser, async(req, res) => {
 	try{
 		//console.log(req.query);
 		if (!req.query["id"]){
@@ -158,7 +183,7 @@ app.post("/favouriteLocation", jsonParser, async(req, res) => {
 
 
 // DELETE: Delete fav loation
-app.delete("/favouriteLocation", jsonParser, async(req, res) => {
+app.delete("/deleteFavouriteLocation", jsonParser, async(req, res) => {
 	try{
 		//console.log(req.query);
 		if (!req.query["id"]){
@@ -179,6 +204,7 @@ app.delete("/favouriteLocation", jsonParser, async(req, res) => {
 		.json({ error: "Internal Server Error. Please try again later." });
 
 	}
+});
 
 
 // GET: /test

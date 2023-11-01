@@ -1,5 +1,6 @@
 import supabase from "../../../../config/supabase.js";
 
+
 export async function getFavouriteLocation(userID){
 	const {data, error} = await supabase
 		.from('favorites')
@@ -12,6 +13,11 @@ export async function getFavouriteLocation(userID){
 		return [];
 	}
 	
+}
+
+export async function checkFavouriteLocation(userID, locationName) {
+	const favouriteLocations = await getFavouriteLocation(userID);
+	return favouriteLocations.includes(locationName);
 }
 
 export async function addFavouriteLocation(userID, location){

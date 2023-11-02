@@ -1,6 +1,8 @@
 import { getCoordinatesFromAddress } from "../../../agents/alternativeGeocoding.js";
+import { getCoordinates } from "../../../agents/googleMaps.js";
 import { getCarParkAvailability } from "../../../agents/lta.js";
 import { filterLocationsWithinDistance } from "../../../utils/searchParkingSlotsUtils.js";
+
 
 export class SearchParkingSlots {
     /**
@@ -10,7 +12,8 @@ export class SearchParkingSlots {
     constructor(locationDetails) {
         this.locationDetails = locationDetails;
         // this.locationDetails = {latitude: 1.2973076174054539, longitude: 103.77635098363267};
-        this.nearbySlots = null;
+        this.nearSlots = null;
+        this.filteredSlots = null;
         this.formattedSlots = null;
     }
 
@@ -25,9 +28,19 @@ export class SearchParkingSlots {
      */
     async formatLocationDetails() {
         try {
-            const coordinates = await getCoordinatesFromAddress(
-                this.locationDetails
-            );
+            let coordinates;
+
+            try {
+                coordinates = await getCoordinates(this.locationDetails);
+            } catch (error) {
+                console.error(
+                    "Error getting coordinates from Google Maps:",
+                    error
+                );
+                coordinates = await getCoordinatesFromAddress(
+                    this.locationDetails
+                );
+            }
             this.locationDetails = coordinates;
         } catch (error) {
             console.error("Error formatting location details:", error);
@@ -76,8 +89,9 @@ export class SearchParkingSlots {
      */
     async processPipeline() {
         await this.init();
-        const nearSlots = this.searchNearSlots(1, 2);
+        this.nearSlots = this.searchNearSlots(1, 2);
+        // this.filteredSlots = this.filterSlots(true);
 
-        return nearSlots;
+        return this.nearSlots;
     }
 }

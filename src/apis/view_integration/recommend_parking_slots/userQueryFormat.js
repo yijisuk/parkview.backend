@@ -78,7 +78,10 @@ export async function extractDestinationFromQuery(model, query) {
                 },
                 {
                     role: "user",
-                    content: `Extract the user's destination from the given context. Only return the address; no extra words or punctuations, no warnings: '${query}'`,
+                    content: `Extract the user's destination from the given context. 
+                        Only return the address; no extra words or punctuations, no warnings.
+                        If the content cannot be comprehended, simply return a relevant message in a single sentence:
+                        '${query}'`,
                 },
             ],
             model: useModel,

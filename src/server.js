@@ -35,7 +35,7 @@ app.get("/processVoiceQuery", async (req, res) => {
                 .json({ error: "Failed to process voice query to text." });
         }
 
-        const destination = await extractDestinationFromQuery("gpt-3.5", response);
+        const destination = await extractDestinationFromQuery("gpt-4", response);
 
         if (!destination) {
             return res

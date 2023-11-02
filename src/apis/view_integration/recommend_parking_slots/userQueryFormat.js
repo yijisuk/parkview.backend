@@ -10,35 +10,6 @@ import OpenAI from "openai";
  */
 export async function processVoiceQueryToText(uid, audioFileName) {
 
-    // let retries = 5;
-    // const delay = 2000;
-
-    // const getAudioFileURLWithRetry = async () => {
-    //     while (retries > 0) {
-    //         try {
-    //             const audioFileURL = await getSignedUrlFromSupabase(audioFileName, 60);
-    //             return audioFileURL;
-
-    //         } catch (error) {
-
-    //             retries--;
-    //             if (retries <= 0) {
-    //                 throw new Error("Max retries reached, could not get signed URL");
-    //             }
-    //             console.log(`Retrying to get signed URL... (${retries} attempts remaining)`);
-    //             await new Promise((resolve) => setTimeout(resolve, delay));
-    //         }
-    //     }
-    // };
-
-    // let audioFileURL;
-
-    // try {
-    //     audioFileURL = await getAudioFileURLWithRetry();
-    // } catch (error) {
-    //     console.error("Failed to get signed URL:", error);
-    // }
-
     try {
         const audioFileURL = await getSignedUrlFromSupabase(uid, audioFileName, 60);
         const audioResponse = await axios.get(audioFileURL, {
@@ -107,7 +78,7 @@ export async function extractDestinationFromQuery(model, query) {
                 },
                 {
                     role: "user",
-                    content: `Extract the user's destination from the given context. Only return the address; no extra words or punctuations: '${query}'`,
+                    content: `Extract the user's destination from the given context. Only return the address; no extra words or punctuations, no warnings: '${query}'`,
                 },
             ],
             model: useModel,

@@ -6,12 +6,12 @@ import { getSignedUrlFromSupabase } from "./agents/supabaseFunctions.js";
 import { getCoordinates, getRoutes } from "./agents/googleMaps.js";
 
 // test 1
-// const searchAddress = "National University of Singapore";
+const searchAddress = "National University of Singapore";
 
-// const gMapsCoordinates = await getCoordinates(searchAddress);
+const gMapsCoordinates = await getCoordinates(searchAddress);
 // const alterMapsCoordinates = await getCoordinatesFromAddress(searchAddress);
 
-// console.log("Google Maps: ", gMapsCoordinates);
+console.log("Google Maps: ", gMapsCoordinates);
 // console.log("Alternative Maps: ", alterMapsCoordinates);
 
 // test 2
@@ -54,11 +54,11 @@ import { getCoordinates, getRoutes } from "./agents/googleMaps.js";
 
 // test 8
 // const fileName = "8688eac8-b231-4f4a-ab9a-6b5ed92278f2/audio-qiyrl8d6tfl.m4a";
-const id = "8688eac8-b231-4f4a-ab9a-6b5ed92278f2";
-const fileName = "rec-7kztxkg8hn8.m4a";
+// const id = "8688eac8-b231-4f4a-ab9a-6b5ed92278f2";
+// const fileName = "rec-7kztxkg8hn8.m4a";
 // const fileName = "harvard";
-const result = await processVoiceQueryToText(id, fileName);
-console.log(result);
+// const result = await processVoiceQueryToText(id, fileName);
+// console.log(result);
 
 // const url = await getSignedUrlFromSupabase(id, fileName, 60);
 // console.log(url);

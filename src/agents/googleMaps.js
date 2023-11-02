@@ -20,6 +20,7 @@ export function getCoordinates(address) {
                 const longitude = data.results[0].geometry.location.lng;
                 return { latitude: latitude, longitude: longitude };
             } else {
+                console.log(address);
                 console.error(`GMaps Geocoding API error: ${data.status}`);
                 return null;
             }

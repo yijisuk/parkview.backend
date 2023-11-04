@@ -5,7 +5,7 @@ import { getSignedUrlFromSupabase } from "./agents/supabase/supabaseFunctions.js
 import {
     getCoordinatesGMaps,
     getRoutesGMaps,
-    getETAGMaps,
+    getEtaGMaps,
 } from "./agents/external_apis/googleMaps.js";
 import { getCoordinatesFreeGeocoding } from "./agents/external_apis/alternativeGeocoding.js";
 
@@ -65,5 +65,5 @@ const destinationAddress = "National University of Singapore";
 const originCoords = await getCoordinatesGMaps(originAddress);
 const destinationCoords = await getCoordinatesGMaps(destinationAddress);
 
-const dd = await getETAGMaps(originCoords, destinationCoords);
+const dd = await getEtaGMaps(originCoords, destinationCoords);
 console.log(dd);

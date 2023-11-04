@@ -12,7 +12,7 @@ import rankParkingSlots from "./apis/main/rankParkingSlots.js";
 import {
     getCoordinatesGMaps,
     getRoutesGMaps,
-    getETAGMaps,
+    getEtaGMaps,
 } from "./agents/external_apis/googleMaps.js";
 import { formatAddressToCoordinates } from "./utils/coordOperations.js";
 import {
@@ -35,37 +35,49 @@ app.use(cors());
 // - most fits the user's preferences
 // GET: /getParkingCoordinates
 app.get("/getParkingCoordinates", async (req, res) => {
-
     try {
         const { originLat, originLon, destinationAddress } = req.query;
 
         if (!originLat || !originLon || !destinationAddress) {
             return res
                 .status(400)
-                .json({ error: "Missing required query parameters: originLat, originLon, destinationAddress" });
+                .json({
+                    error: "Missing required query parameters: originLat, originLon, destinationAddress",
+                });
         }
 
-        const formattedAddress = await formatAddressToCoordinates(destinationAddress);
-        const originCoords = { latitude: parseFloat(originLat), longitude: parseFloat(originLon) };
+        const formattedAddress = await formatAddressToCoordinates(
+            destinationAddress
+        );
+        const originCoords = {
+            latitude: parseFloat(originLat),
+            longitude: parseFloat(originLon),
+        };
 
         const searchParkingSlots = new SearchParkingSlots(formattedAddress);
         const nearbySlots = await searchParkingSlots.init();
 
-        // TODO: 
+        // TODO:
         // - get user preference parameters from supabase
         // - update on eta (DONE)
-        const eta = await getETAGMaps(originCoords, formattedAddress);
+        const eta = await getEtaGMaps(originCoords, formattedAddress);
         // temporarily using dummy preferences
         const preferences = {
             availability: 1,
             weather: 3,
             hourlyRate: 2,
-        }
+        };
         const rankedParkingSlots = await rankParkingSlots(
-            formattedAddress, nearbySlots, preferences, eta);
+            formattedAddress,
+            nearbySlots,
+            preferences,
+            eta
+        );
 
-
-        if (!rankedParkingSlots || Object.keys(rankedParkingSlots).length === 0) {
+        if (
+            !rankedParkingSlots ||
+            Object.keys(rankedParkingSlots).length === 0
+        ) {
             return res.status(404).json({ error: "No parking slots found." });
         }
 
@@ -75,14 +87,12 @@ app.get("/getParkingCoordinates", async (req, res) => {
             (slot) => slot.carparkId === firstSlotId
         );
 
-        return res.status(200).json({ "slot": firstSlot });
-
+        return res.status(200).json({ slot: firstSlot });
     } catch (error) {
         console.error("Error in /getParkingCoordinates:", error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 });
-
 
 // APIs for Route Searching
 // GET: /getRoutes
@@ -134,7 +144,6 @@ app.get("/getRoutes", async (req, res) => {
             .json({ error: "Internal Server Error. Please try again later." });
     }
 });
-
 
 // API for getting the coordinates for a given address
 // GET: /getCoordinates

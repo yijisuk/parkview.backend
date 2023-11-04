@@ -68,9 +68,7 @@ export async function getRoutesGMaps(origin, destination) {
         });
 }
 
-
-export async function getETAGMaps(origin, destination) {
-
+export async function getEtaGMaps(origin, destination) {
     const apiKey = process.env.GMAPS_API_KEY;
 
     const placeIdRequestUrl = (lat, lon) => {
@@ -88,7 +86,6 @@ export async function getETAGMaps(origin, destination) {
         destinationResponse = await fetch(
             placeIdRequestUrl(destination.latitude, destination.longitude)
         ).then((response) => response.json());
-        
     } catch (error) {
         throw new Error("Failed to fetch Place ID: " + error.message);
     }

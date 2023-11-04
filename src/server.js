@@ -21,6 +21,7 @@ import {
     addFavouriteLocation,
     deleteFavouriteLocation,
 } from "./apis/view_integration/favouriteManager.js";
+import { addPreference, updatePreference } from "./apis/view_integration/slotPreferenceManager.js";
 
 const app = express();
 const jsonParser = bodyParser.json();
@@ -268,6 +269,33 @@ app.delete("/deleteFavouriteLocation", jsonParser, async (req, res) => {
             .json({ error: "Internal Server Error. Please try again later." });
     }
 });
+
+
+// ===== SLOT RANKING CRITERIA PREFERENCE ============================================================
+
+// POST: Add Preference
+app.post("/addPreference", jsonParser, async (req, res) => {
+
+    try {
+        if (!req.body["id"]) {
+            return res.status(400).json({ error: "Missing user ID." });
+        }
+        if (!req.body["preference"]) {
+            return res.status(400).json({ error: "Missing preferences." });
+        }
+
+        const data = await addPreference(req.body.id, req.body.preference);
+
+        return res.status(200).json({ data: data });
+
+    } catch (error) {
+        console.error(`Internal Server Error: ${error}`);
+        return res
+            .status(500)
+            .json({ error: "Internal Server Error. Please try again later." });
+    }
+});
+
 
 // ===== UTILS & TESTING =======================================================================
 

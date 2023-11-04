@@ -88,7 +88,8 @@ app.get("/getParkingCoordinates", async (req, res) => {
             (slot) => slot.carparkId === firstSlotId
         );
 
-        return res.status(200).json({ slot: firstSlot });
+        return res.status(200).json(firstSlot);
+
     } catch (error) {
         console.error("Error in /getParkingCoordinates:", error);
         return res.status(500).json({ error: "Internal Server Error" });

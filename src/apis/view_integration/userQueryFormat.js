@@ -1,17 +1,19 @@
 import axios from "axios";
-import { getSignedUrlFromSupabase } from "../../../agents/supabaseFunctions.js";
+import { getSignedUrlFromSupabase } from "../../agents/supabase/supabaseFunctions.js";
 import OpenAI from "openai";
 
-
 /**
- * 
+ *
  * @param {string} audioFileName - name of the audio file to be processed
  * @returns {string} - Returns the transcribed text of the audio file
  */
 export async function processVoiceQueryToText(uid, audioFileName) {
-
     try {
-        const audioFileURL = await getSignedUrlFromSupabase(uid, audioFileName, 60);
+        const audioFileURL = await getSignedUrlFromSupabase(
+            uid,
+            audioFileName,
+            60
+        );
         const audioResponse = await axios.get(audioFileURL, {
             responseType: "arraybuffer",
         });
@@ -33,21 +35,17 @@ export async function processVoiceQueryToText(uid, audioFileName) {
         if (result && result.text) {
             const transcribedText = result.text.toLowerCase();
             return transcribedText;
-
         } else {
             console.log("Unexpected result shape:", result);
             return null;
         }
-
     } catch (error) {
         console.log(error);
         return null;
     }
 }
 
-
 export async function extractDestinationFromQuery(model, query) {
-
     try {
         // Validate model
         let useModel;
@@ -101,7 +99,6 @@ export async function extractDestinationFromQuery(model, query) {
         }
 
         return destination;
-
     } catch (error) {
         console.error("Error in extractDestinationFromQuery:", error);
         throw error;

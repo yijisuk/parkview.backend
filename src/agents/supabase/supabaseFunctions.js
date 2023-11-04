@@ -1,10 +1,12 @@
-import supabase from "../../config/supabase.js";
+import supabase from "../../../config/supabase.js";
 
-
-export async function getSignedUrlFromSupabase(uid, fileName, durationInSeconds) {
-
+export async function getSignedUrlFromSupabase(
+    uid,
+    fileName,
+    durationInSeconds
+) {
     const fileFullName = `${uid}/${fileName}`;
-    
+
     const { data, error } = await supabase.storage
         .from(process.env.PARKVIEW_STORAGE_BUCKET)
         .createSignedUrl(fileFullName, durationInSeconds);

@@ -1,18 +1,13 @@
-import { SearchParkingSlots } from "./apis/non_view_integration/process_parking_slots/searchParkingSlots.js";
-import { getCoordinatesFromAddress } from "./agents/alternativeGeocoding.js";
-import { processVoiceQueryToText } from "./apis/view_integration/recommend_parking_slots/userQueryFormat.js";
-import { extractDestinationFromQuery } from "./apis/view_integration/recommend_parking_slots/userQueryFormat.js";
-import { getSignedUrlFromSupabase } from "./agents/supabaseFunctions.js";
-import { getCoordinates, getRoutes } from "./agents/googleMaps.js";
-
-// test 1
-const searchAddress = "National University of Singapore";
-
-const gMapsCoordinates = await getCoordinates(searchAddress);
-// const alterMapsCoordinates = await getCoordinatesFromAddress(searchAddress);
-
-console.log("Google Maps: ", gMapsCoordinates);
-// console.log("Alternative Maps: ", alterMapsCoordinates);
+import SearchParkingSlots from "./apis/main/searchParkingSlots.js";
+import { processVoiceQueryToText } from "./apis/view_integration/userQueryFormat.js";
+import { extractDestinationFromQuery } from "./apis/view_integration/userQueryFormat.js";
+import { getSignedUrlFromSupabase } from "./agents/supabase/supabaseFunctions.js";
+import {
+    getCoordinatesGMaps,
+    getRoutesGMaps,
+    getETAGMaps,
+} from "./agents/external_apis/googleMaps.js";
+import { getCoordinatesFreeGeocoding } from "./agents/external_apis/alternativeGeocoding.js";
 
 // test 2
 // const searchParkingSlots = new SearchParkingSlots(searchAddress);
@@ -62,3 +57,13 @@ console.log("Google Maps: ", gMapsCoordinates);
 
 // const url = await getSignedUrlFromSupabase(id, fileName, 60);
 // console.log(url);
+
+// test 9
+const originAddress = "Nanyang Technological University";
+const destinationAddress = "National University of Singapore";
+
+const originCoords = await getCoordinatesGMaps(originAddress);
+const destinationCoords = await getCoordinatesGMaps(destinationAddress);
+
+const dd = await getETAGMaps(originCoords, destinationCoords);
+console.log(dd);

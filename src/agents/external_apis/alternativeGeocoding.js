@@ -1,13 +1,11 @@
 import fetch from "node-fetch";
 
-
 /**
- * 
+ *
  * @param {string} address - string of the address to be geocoded
  * @returns {Array.<number>} - array containing latitude and longitude values
  */
-export async function getCoordinatesFromAddress(address) {
-    
+export async function getCoordinatesFreeGeocoding(address) {
     const url = `https://geocode.maps.co/search?q=${encodeURIComponent(
         address
     )}`;
@@ -22,9 +20,7 @@ export async function getCoordinatesFromAddress(address) {
         const longitude = firstResult.lon;
 
         return { latitude, longitude };
-
     } catch (error) {
-
         console.log(`Geocoding API error: ${error}`);
         return null;
     }

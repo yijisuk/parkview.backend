@@ -15,6 +15,7 @@ export function filterLocationsWithinDistance(
     });
 }
 
+
 function haversineDistance([lat1, lon1], [lat2, lon2]) {
     // Radius of the Earth in km
     const R = 6371;

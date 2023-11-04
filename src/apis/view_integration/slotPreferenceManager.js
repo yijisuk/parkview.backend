@@ -17,3 +17,17 @@ export async function updatePreference(userID, preference) {
 
     return error;
 }
+
+export async function getPreference(userID) {
+    const { data, error } = await supabase
+        .from("preferences")
+        .select("preferences")
+        .eq("id", userID);
+
+    if (error) {
+        return error;
+    }
+
+    const preferences = data[0].preferences;
+    return preferences;
+}

@@ -21,7 +21,11 @@ import {
     addFavouriteLocation,
     deleteFavouriteLocation,
 } from "./apis/view_integration/favouriteManager.js";
-import { addPreference, updatePreference } from "./apis/view_integration/slotPreferenceManager.js";
+import { 
+    addPreference, 
+    updatePreference, 
+    getPreference 
+} from "./apis/view_integration/slotPreferenceManager.js";
 
 const app = express();
 const jsonParser = bodyParser.json();
@@ -37,9 +41,9 @@ app.use(cors());
 // GET: /getParkingCoordinates
 app.get("/getParkingCoordinates", async (req, res) => {
     try {
-        const { originLat, originLon, destinationAddress } = req.query;
+        const { userId, originLat, originLon, destinationAddress } = req.query;
 
-        if (!originLat || !originLon || !destinationAddress) {
+        if (!userId || !originLat || !originLon || !destinationAddress) {
             return res
                 .status(400)
                 .json({
@@ -58,22 +62,27 @@ app.get("/getParkingCoordinates", async (req, res) => {
         const searchParkingSlots = new SearchParkingSlots(formattedAddress);
         const nearbySlots = await searchParkingSlots.init();
 
+        console.log(nearbySlots)
+
         // TODO:
         // - get user preference parameters from supabase
         // - update on eta (DONE)
         const eta = await getEtaGMaps(originCoords, formattedAddress);
         // temporarily using dummy preferences
-        const preferences = {
-            availability: 1,
-            weather: 3,
-            hourlyRate: 2,
-        };
+        const preferences = await getPreference(userId);
+        // const preferences = {
+        //     availability: 1,
+        //     weather: 3,
+        //     hourlyRate: 2,
+        // };
         const rankedParkingSlots = await rankParkingSlots(
             formattedAddress,
             nearbySlots,
             preferences,
             eta
         );
+
+        console.log(rankedParkingSlots);
 
         if (
             !rankedParkingSlots ||
@@ -88,12 +97,16 @@ app.get("/getParkingCoordinates", async (req, res) => {
             (slot) => slot.carparkId === firstSlotId
         );
 
+        console.log(firstSlot);
+
         return res.status(200).json({ slot: firstSlot });
+
     } catch (error) {
         console.error("Error in /getParkingCoordinates:", error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 
 // APIs for Route Searching
 // GET: /getRoutes
@@ -146,6 +159,7 @@ app.get("/getRoutes", async (req, res) => {
     }
 });
 
+
 // API for getting the coordinates for a given address
 // GET: /getCoordinates
 app.get("/getCoordinates", async (req, res) => {
@@ -175,6 +189,7 @@ app.get("/getCoordinates", async (req, res) => {
     }
 });
 
+
 // ===== FAVOURITE LOCATION ============================================================
 
 // APIs for managing favorite locations
@@ -196,6 +211,7 @@ app.get("/getFavouriteLocation", jsonParser, async (req, res) => {
             .json({ error: "Internal Server Error. Please try again later." });
     }
 });
+
 
 // GET: Check Fav Location
 app.get("/checkFavouriteLocation", jsonParser, async (req, res) => {
@@ -223,6 +239,7 @@ app.get("/checkFavouriteLocation", jsonParser, async (req, res) => {
     }
 });
 
+
 // POST: Add fav location
 app.post("/addFavouriteLocation", jsonParser, async (req, res) => {
     try {
@@ -247,6 +264,7 @@ app.post("/addFavouriteLocation", jsonParser, async (req, res) => {
             .json({ error: "Internal Server Error. Please try again later." });
     }
 });
+
 
 // DELETE: Delete fav loation
 app.delete("/deleteFavouriteLocation", jsonParser, async (req, res) => {
@@ -277,16 +295,47 @@ app.delete("/deleteFavouriteLocation", jsonParser, async (req, res) => {
 app.post("/addPreference", jsonParser, async (req, res) => {
 
     try {
-        if (!req.body["id"]) {
+        const { id, preference } = req.body;
+
+        if (!id) {
             return res.status(400).json({ error: "Missing user ID." });
         }
-        if (!req.body["preference"]) {
+        if (!preference) {
             return res.status(400).json({ error: "Missing preferences." });
         }
 
-        const data = await addPreference(req.body.id, req.body.preference);
+        const userPreference = await getPreference(id);
+        let data = null;
+
+        if (userPreference) {
+            data = await updatePreference(req.body.id, req.body.preference);
+        } else {
+            data = await addPreference(req.body.id, req.body.preference);
+        }
 
         return res.status(200).json({ data: data });
+
+    } catch (error) {
+        console.error(`Internal Server Error: ${error}`);
+        return res
+            .status(500)
+            .json({ error: "Internal Server Error. Please try again later." });
+    }
+});
+
+
+// GET: Get Preference
+app.get("/getPreference", jsonParser, async (req, res) => {
+    try {
+        const { id } = req.query;
+
+        if (!id) {
+            return res.status(400).json({ error: "Missing user ID." });
+        }
+
+        const preference = await getPreference(req.query.id);
+
+        return res.status(200).json(preference);
 
     } catch (error) {
         console.error(`Internal Server Error: ${error}`);
@@ -336,6 +385,7 @@ app.get("/processVoiceQuery", async (req, res) => {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 
 // Test API
 // GET: /test

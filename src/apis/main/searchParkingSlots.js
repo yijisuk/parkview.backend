@@ -7,10 +7,12 @@ import { formatAddressToCoordinates } from "../../utils/coordOperations.js";
 export default class SearchParkingSlots {
     /**
      *
-     * @param {(string | Array.<number>)} destinationAddrerss - either an address string or an array containing latitude and longitude values
+     * @param {(string | Array.<number>)} destinationAddress - either an address string or an array containing latitude and longitude values
      */
-    constructor(destinationAddrerss) {
-        this.destinationAddress = destinationAddrerss;
+    constructor(destinationAddress, minDistance = 1, maxDistance = 2) {
+        this.destinationAddress = destinationAddress;
+        this.minDistance = minDistance;
+        this.maxDistance = maxDistance;
         this.nearbySlots = null;
         this.formattedSlots = null;
     }
@@ -20,7 +22,7 @@ export default class SearchParkingSlots {
             this.destinationAddress = await formatAddressToCoordinates(this.destinationAddress);
         }
 
-        await this.searchNearSlots(1, 2);
+        await this.searchNearSlots(this.minDistance, this.maxDistance);
         this.reformatSlotData();
 
         return this.formattedSlots;

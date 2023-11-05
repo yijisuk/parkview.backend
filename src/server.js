@@ -62,27 +62,15 @@ app.get("/getParkingCoordinates", async (req, res) => {
         const searchParkingSlots = new SearchParkingSlots(formattedAddress);
         const nearbySlots = await searchParkingSlots.init();
 
-        console.log(nearbySlots)
-
-        // TODO:
-        // - get user preference parameters from supabase
-        // - update on eta (DONE)
         const eta = await getEtaGMaps(originCoords, formattedAddress);
-        // temporarily using dummy preferences
         const preferences = await getPreference(userId);
-        // const preferences = {
-        //     availability: 1,
-        //     weather: 3,
-        //     hourlyRate: 2,
-        // };
+
         const rankedParkingSlots = await rankParkingSlots(
             formattedAddress,
             nearbySlots,
             preferences,
             eta
         );
-
-        console.log(rankedParkingSlots);
 
         if (
             !rankedParkingSlots ||
@@ -100,7 +88,36 @@ app.get("/getParkingCoordinates", async (req, res) => {
         return res.status(200).json(firstSlot);
 
     } catch (error) {
-        console.error("Error in /getParkingCoordinates:", error);
+        console.error("Error in /getParkingCoordinates:", error.message);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+
+// GET: /getNearbyParkingSlots
+app.get("/getNearbyParkingSlots", async (req, res) => {
+
+    try {
+        const { latitude, longitude } = req.query;
+
+        if (!latitude || !longitude) {
+            return res.status(400).json({
+                error: "Missing required query parameters: originLat, originLon",
+            });
+        }
+
+        const originCoords = {
+            latitude: parseFloat(latitude),
+            longitude: parseFloat(longitude),
+        };
+
+        const searchParkingSlots = new SearchParkingSlots(originCoords, 1, 5);
+        const nearbySlots = await searchParkingSlots.init();
+
+        return res.status(200).json(nearbySlots);
+
+    } catch (error) {
+        console.error("Error in /getNearbyParkingSlots:", error.message);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 });

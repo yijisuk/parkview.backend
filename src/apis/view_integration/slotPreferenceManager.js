@@ -24,8 +24,9 @@ export async function getPreference(userID) {
         .select("preferences")
         .eq("id", userID);
 
-    if (error) {
-        return error;
+    if (error || data.length === 0) {
+        // Return null or handle the error accordingly if there's an error or no data
+        return null;
     }
 
     const preferences = data[0].preferences;

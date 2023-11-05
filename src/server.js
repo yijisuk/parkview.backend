@@ -306,9 +306,9 @@ app.post("/addPreference", jsonParser, async (req, res) => {
         let data = null;
 
         if (userPreference) {
-            data = await updatePreference(req.body.id, req.body.preference);
+            data = await updatePreference(id, preference);
         } else {
-            data = await addPreference(req.body.id, req.body.preference);
+            data = await addPreference(id, preference);
         }
 
         return res.status(200).json({ data: data });
@@ -331,7 +331,7 @@ app.get("/getPreference", jsonParser, async (req, res) => {
             return res.status(400).json({ error: "Missing user ID." });
         }
 
-        const preference = await getPreference(req.query.id);
+        const preference = await getPreference(id);
 
         return res.status(200).json(preference);
 

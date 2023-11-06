@@ -6,9 +6,15 @@
   "type": "module",
   "scripts": {
     "start": "node -r dotenv/config src/index.js",
-    "test": "node -r dotenv/config src/test.js",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest",
     "server": "node -r dotenv/config src/server.js",
     "build": "tsc"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -26,5 +32,8 @@
     "node-fetch": "^3.3.2",
     "openai": "^4.14.2",
     "wavefile": "^11.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }

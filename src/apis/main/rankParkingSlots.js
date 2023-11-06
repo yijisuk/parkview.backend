@@ -120,7 +120,7 @@ function groupByCarparkId(
 }
 
 
-function calculateWeightedScore(
+export function calculateWeightedScore(
     availabilityPreference,
     weatherPreference,
     hourlyRatePreference,

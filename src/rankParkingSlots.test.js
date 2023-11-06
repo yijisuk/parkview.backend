@@ -64,7 +64,7 @@ describe('Test rankParkingSlots VALID INPUTS', () => {
   const preferences = { weather: 0, hourlyRate: 2, availability: 1 };
 
 
-  it('Parking Slots ALL Valid', async () => {
+  it('Preferences: {weather: 0, hourlyRate: 2, availability: 1}', async () => {
     let combinedRankedSlots = await rankParkingSlots(destinationAddress, nearbySlots, preferences, eta);
     expect(combinedRankedSlots.BL1.weightedScore).toBeCloseTo(0.833, 2);
     expect(combinedRankedSlots.BL2.weightedScore).toBeCloseTo(0.583, 2);

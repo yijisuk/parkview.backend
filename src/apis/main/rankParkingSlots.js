@@ -8,6 +8,15 @@ import { formatAddressToCoordinates } from "../../utils/coordOperations.js";
 export default async function rankParkingSlots(
     destinationAddress, nearbySlots, preferences, eta) {
 
+    //error checking for preferences
+    if (!preferences.hasOwnProperty('availability') || !preferences.hasOwnProperty('hourlyRate') || !preferences.hasOwnProperty('weather')){
+        throw new Error("Invalid Preferences");
+    }
+    //error checking for invalid eta
+    let pattern = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/g;
+    if (!pattern.test(eta)) throw new Error("Invalid ETA"); 
+
+
     // const formattedAddress = await formatAddressToCoordinates(destinationAddress);
     const formattedAddress = destinationAddress;
 
@@ -111,7 +120,7 @@ function groupByCarparkId(
 }
 
 
-function calculateWeightedScore(
+export function calculateWeightedScore(
     availabilityPreference,
     weatherPreference,
     hourlyRatePreference,

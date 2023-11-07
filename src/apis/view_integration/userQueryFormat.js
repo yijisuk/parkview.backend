@@ -1,44 +1,31 @@
 import axios from "axios";
 import { getSignedUrlFromSupabase } from "../../agents/supabase/supabaseFunctions.js";
 import OpenAI from "openai";
+import { whisperTranscription } from "../../agents/external_apis/speech_to_text/whisper.js";
+import { wav2vec2Transcription } from "../../agents/external_apis/speech_to_text/wav2vec2.js";
 
 /**
  *
+ * @param {string} model - model to be used for transcription
+ * @param {string} uid - user id
  * @param {string} audioFileName - name of the audio file to be processed
  * @returns {string} - Returns the transcribed text of the audio file
  */
-export async function processVoiceQueryToText(uid, audioFileName) {
+export async function processVoiceQueryToText(model, uid, audioFileName) {
+    
     try {
-        const audioFileURL = await getSignedUrlFromSupabase(
-            uid,
-            audioFileName,
-            60
-        );
-        const audioResponse = await axios.get(audioFileURL, {
-            responseType: "arraybuffer",
-        });
-        const wavData = Buffer.from(audioResponse.data);
+        let transcribedText;
 
-        const response = await fetch(
-            "https://api-inference.huggingface.co/models/facebook/wav2vec2-base-960h",
-            {
-                headers: {
-                    Authorization: `Bearer ${process.env.HFACE_API_KEY}`,
-                },
-                method: "POST",
-                body: wavData,
-            }
-        );
-
-        const result = await response.json();
-
-        if (result && result.text) {
-            const transcribedText = result.text.toLowerCase();
-            return transcribedText;
+        if (model === "whisper") {
+            transcribedText = await whisperTranscription(uid, audioFileName);
+        } else if (model === "wav2vec2") {
+            transcribedText = await wav2vec2Transcription(uid, audioFileName);
         } else {
-            console.log("Unexpected result shape:", result);
-            return null;
+            console.error("Invalid model specified.");
         }
+
+        return transcribedText;
+
     } catch (error) {
         console.log(error);
         return null;

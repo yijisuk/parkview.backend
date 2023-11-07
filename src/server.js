@@ -368,6 +368,8 @@ app.get("/getPreference", jsonParser, async (req, res) => {
 app.get("/processVoiceQuery", async (req, res) => {
     try {
         const { uid, audioFileName } = req.query;
+        const transcriptionModel = "whisper";
+        const extractionModel = "gpt-4";
 
         if (!uid || !audioFileName) {
             return res
@@ -375,7 +377,11 @@ app.get("/processVoiceQuery", async (req, res) => {
                 .json({ error: "Missing 'audioFileName' parameter in query." });
         }
 
-        const response = await processVoiceQueryToText(uid, audioFileName);
+        const response = await processVoiceQueryToText(
+            transcriptionModel,
+            uid,
+            audioFileName
+        );
 
         if (!response) {
             return res
@@ -384,7 +390,7 @@ app.get("/processVoiceQuery", async (req, res) => {
         }
 
         const destination = await extractDestinationFromQuery(
-            "gpt-4",
+            extractionModel,
             response
         );
 

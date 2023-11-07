@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node -r dotenv/config src/index.js",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest",
+    "test": "node -r dotenv/config src/test.js",
     "server": "node -r dotenv/config src/server.js",
     "build": "tsc"
   },

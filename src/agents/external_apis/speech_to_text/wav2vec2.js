@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getSignedUrlFromSupabase } from "../../supabase/supabaseFunctions.js";
-import OpenAI from "openai";
+
 
 /**
  *

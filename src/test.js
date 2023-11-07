@@ -8,6 +8,7 @@ import {
     getEtaGMaps,
 } from "./agents/external_apis/googleMaps.js";
 import { getCoordinatesFreeGeocoding } from "./agents/external_apis/alternativeGeocoding.js";
+import { whisperTranscription } from "./agents/external_apis/speech_to_text/whisper.js";
 
 // test 2
 // const searchParkingSlots = new SearchParkingSlots(searchAddress);
@@ -59,11 +60,20 @@ import { getCoordinatesFreeGeocoding } from "./agents/external_apis/alternativeG
 // console.log(url);
 
 // test 9
-const originAddress = "Nanyang Technological University";
-const destinationAddress = "National University of Singapore";
+// const originAddress = "Nanyang Technological University";
+// const destinationAddress = "National University of Singapore";
 
-const originCoords = await getCoordinatesGMaps(originAddress);
-const destinationCoords = await getCoordinatesGMaps(destinationAddress);
+// const originCoords = await getCoordinatesGMaps(originAddress);
+// const destinationCoords = await getCoordinatesGMaps(destinationAddress);
 
-const dd = await getEtaGMaps(originCoords, destinationCoords);
-console.log(dd);
+// const dd = await getEtaGMaps(originCoords, destinationCoords);
+// console.log(dd);
+
+// test 10
+const uid = "a99450e5-130a-4afe-ba8b-0f24411282dc";
+const fileName = "rec-f8iibxjxsvs.m4a";
+
+const transcription = await processVoiceQueryToText("whisper", uid, fileName);
+const dest = await extractDestinationFromQuery("gpt-4", transcription);
+
+console.log(dest);

@@ -8,6 +8,13 @@ The parkview project was developed as part of the coursework for the **SC2006 (S
 
 **The mobile application is designed to enhance the parking experience by guiding users to the optimal parking location based on their destination and personal preferences. Users can input their intended destination, and parkview will suggest the most suitable parking spot, taking into consideration factors such as proximity and availability.**
 
+**Main features** of the app are:
+- Optimal parking spot suggestions based on destination and personal preferences
+- Favorites feature to bookmark commonly used destinations
+- Integrates with built-in navigation apps (Apple Maps for iOS, Google Maps for Android)
+- Customizable user preference settings for parking recommendations (availability, cost, weather)
+- Minimalist, driver-friendly interface with voice-activated search by our intelligent assistant, DOM
+
 This is the backend repository. The frontend repository is accessible [here](https://github.com/yijisuk/parkview.frontend).
 
 ## Tech Stack

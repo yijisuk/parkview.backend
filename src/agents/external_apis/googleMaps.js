@@ -11,7 +11,7 @@ import polyline from "@mapbox/polyline";
  * @returns {Promise.<Object>} - Dictionary containing the latitude and longitude values
  */
 export async function getCoordinatesGMaps(address) {
-    const apiKey = process.env.GMAPS_API_KEY;
+    const apiKey = process.env.GOOGLE_API_KEY;
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
         address
     )}&key=${apiKey}`;
@@ -45,7 +45,7 @@ export async function getCoordinatesGMaps(address) {
  * @returns {Promise<Object>} - Dictionary containing the array of coordinates that compose the routes, estimated distance and estimated time
  */
 export async function getRoutesGMaps(origin, destination) {
-    const apiKey = process.env.GMAPS_API_KEY;
+    const apiKey = process.env.GOOGLE_API_KEY;
     const apiURL = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`;
 
     return fetch(apiURL)
@@ -91,7 +91,7 @@ export async function getRoutesGMaps(origin, destination) {
  * @returns {Promise<string>} - String containing the ETA in the format of {hours}:{minutes}
  */
 export async function getEtaGMaps(origin, destination) {
-    const apiKey = process.env.GMAPS_API_KEY;
+    const apiKey = process.env.GOOGLE_API_KEY;
 
     const placeIdRequestUrl = (lat, lon) => {
         return `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${apiKey}&enable_address_descriptor=true`;

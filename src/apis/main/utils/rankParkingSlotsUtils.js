@@ -1,8 +1,18 @@
+// rankParkingSlotUtils.js: Utility functions for rankParkingSlots.js
+
 import { get2HWeatherForecast } from "../../../agents/external_apis/dataGov.js";
 import { calcDistance } from "../../../utils/vectorOperations.js";
 
 
-// PARKING LOC OPERATIONS
+// PARKING LOC OPERATIONS ============================================================
+/**
+ * Scores the parking locations based on the criterion
+ * 
+ * @param {Array<Object>} parkingSlots - Array of carpark objects
+ * @param {string} crit - Criterion to score the parking locations by
+ * 
+ * @returns {Array<Object>} - Array of carpark objects with scores
+ */
 export function scoreLocations(parkingSlots, crit) {
 
     if (parkingSlots.length === 1) {
@@ -61,7 +71,14 @@ export function scoreLocations(parkingSlots, crit) {
 }
 
 
-// WEATHER FORECAST
+// WEATHER FORECAST ============================================================
+/**
+ * Gets the 2H weather forecast based on the destination location
+ * 
+ * @param {Array<Object>} locationDetails - Array of carpark objects
+ * 
+ * @returns {Object} - Dictionary containing the district name based on the destination location and the corresponding weather forecast
+ */
 export async function getLocation2HWeatherForecast(locationDetails) {
     const { latitude, longitude } = locationDetails;
     const { areaMetadata, forecasts } = await get2HWeatherForecast();

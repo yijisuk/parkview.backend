@@ -1,3 +1,5 @@
+// rankParkingSlots.js: Contains the functions that rank the parking locations based on the user's preferences.
+
 import SearchParkingSlots from "./searchParkingSlots.js";
 import RankByAvailability from "./ranking_functions/rankByAvailability.js";
 import RankByHourlyRate from "./ranking_functions/rankByHourlyRate.js";
@@ -5,6 +7,17 @@ import RankByWeatherCondition from "./ranking_functions/rankByWeatherCondition.j
 import { formatAddressToCoordinates } from "../../utils/coordOperations.js";
 
 
+/**
+ * Main function;
+ * Runs through the ranking & scoring process for the parking slots based on the user's preferences
+ * 
+ * @param {Object} destinationAddress - Dictionary containing the latitude and longitude of the destination
+ * @param {Array<Object>} nearbySlots - Array of nearby carpark objects
+ * @param {Object} preferences - Dictionary containing the user's preferences
+ * @param {string} eta - Estimated time of arrival to the destination
+ * 
+ * @returns {Array.<Object>} - Aggregated Sorted & Scored array of nearby carpark objects based on the user's preferences
+ */
 export default async function rankParkingSlots(
     destinationAddress, nearbySlots, preferences, eta) {
 
@@ -56,7 +69,16 @@ export default async function rankParkingSlots(
 }
 
 
+/**
+ * Combines the rankings of the parking locations, through calculating weighted scores based on the user's preferences
+ * 
+ * @param {Object} parkingSlotsAgg - Dictionary containing ranked arrays of parking locations, by availability, weather condition, and hourly rate
+ * @param {Object} preferences - Dictionary containing the user's preferences
+ * 
+ * @returns {Object} - Dictionary containing the final ranked array of parking locations, by weighted score
+ */
 function calculateFinalScore(parkingSlotsAgg, preferences) {
+
     const availabilityRankedSlots = parkingSlotsAgg.availability;
     const weatherRankedSlots = parkingSlotsAgg.weather;
     const hourlyRateRankedSlots = parkingSlotsAgg.hourlyRate;
@@ -89,6 +111,17 @@ function calculateFinalScore(parkingSlotsAgg, preferences) {
 }
 
 
+/**
+ * Groups the parking locations by carpark ID
+ * 
+ * @param {Array<Object>} availabilityRankedSlots - Array of parking locations, ranked by availability
+ * @param {Array<Object>} weatherRankedSlots - Array of parking locations, ranked by weather condition
+ * @param {Array<Object>} hourlyRateRankedSlots - Array of parking locations, ranked by hourly rate
+ * 
+ * @returns {Object} - Dictionary containing the respective scores of parking locations, grouped by carpark ID,
+ * where for each carpark ID, the dictionary contains the individual scores of the parking location for three criteria:
+ * availability, weather condition, and hourly rate
+ */
 function groupByCarparkId(
     availabilityRankedSlots,
     weatherRankedSlots,
@@ -120,6 +153,17 @@ function groupByCarparkId(
 }
 
 
+/**
+ * Calculates the weighted score of the parking locations, based on the user's preferences for the three criteria:
+ * availability, weather condition, and hourly rate
+ * 
+ * @param {number} availabilityPreference - User's preference ranking for "availability"
+ * @param {number} weatherPreference - User's preference ranking for "weather condition"
+ * @param {number} hourlyRatePreference - User's preference ranking for "hourly rate"
+ * @param {Array<Object>} groupedSlots - Array of parking locations, grouped by carpark ID
+ * 
+ * @returns {Array<Object>} - Array of parking locations, grouped by carpark ID, with weighted scores
+ */
 export function calculateWeightedScore(
     availabilityPreference,
     weatherPreference,
@@ -154,7 +198,18 @@ export function calculateWeightedScore(
 }
 
 
+/**
+ * Assigns weights to the three criteria: availability, weather condition, and hourly rate,
+ * based on the user's preferences
+ * 
+ * @param {Object} preferencesAgg - Dictionary containing the user's preferences for the three criteria: 
+ * availability, weather condition, and hourly rate
+ * 
+ * @returns {Object} - Dictionary containing the weights to apply for the three criteria:
+ * availability, weather condition, and hourly rate
+ */
 function assignWeights(preferencesAgg) {
+
     const { availability, weather, hourlyRate } = preferencesAgg;
 
     // Count the number of zeros in the rankings

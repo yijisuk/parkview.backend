@@ -1,3 +1,5 @@
+// rankByWeatherCondition.js: Contains the wrapper class of functions that ranks the parking locations by weather condition suitability.
+
 import { getLocation2HWeatherForecast } from "../utils/rankParkingSlotsUtils.js";
 import { sortByDistance } from "../../../utils/vectorOperations.js";
 import { scoreLocations } from "../utils/rankParkingSlotsUtils.js";
@@ -5,6 +7,11 @@ import { scoreLocations } from "../utils/rankParkingSlotsUtils.js";
 
 export default class RankByWeatherCondition {
     
+    /**
+     * 
+     * @param {Array<Object>} nearbySlots - Array of nearby carpark objects
+     * @param {Object} destinationAddress - Dictionary containing the latitude and longitude of the destination
+     */
     constructor(nearbySlots, destinationAddress) {
         this.districtName = null;
         this.weatherData = null;
@@ -15,6 +22,13 @@ export default class RankByWeatherCondition {
         this.scoredSlots = null;
     }
 
+
+    /**
+     * Main function;
+     * Runs through the ranking & scoring process for the parking slots based on weather condition suitability
+     * 
+     * @returns {Promise.<Array.<Object>>} - Sorted & Scored array of nearby carpark objects based on weather condition suitability
+     */
     async init() {
 
         if (this.slotsCount === 0) {
@@ -30,6 +44,12 @@ export default class RankByWeatherCondition {
         return this.scoredSlots;
     }
 
+
+    /**
+     * Filters the parking locations by weather condition suitability
+     * 
+     * @returns {Promise.<Array.<Object>>} - Sorted array of nearby carpark objects based on weather condition suitability
+     */
     async filterByWeatherCondition() {
         const { districtName, forecastWeather } =
             await getLocation2HWeatherForecast(this.destinationAddress);

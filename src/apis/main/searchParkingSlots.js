@@ -1,13 +1,17 @@
+// searchParkingSlots.js: Contains the wrapper class of functions that searches for nearby parking slots from a given address
+
 import { getCarParkAvailability } from "../../agents/external_apis/lta.js";
 import { filterLocationsWithinDistance } from "./utils/searchParkingSlotsUtils.js";
 import { formatAddressToCoordinates } from "../../utils/coordOperations.js";
 
 
-// Base class for processing nearby parking slots from a given address
 export default class SearchParkingSlots {
+
     /**
      *
-     * @param {(string | Array.<number>)} destinationAddress - either an address string or an array containing latitude and longitude values
+     * @param {(string | Object)} destinationAddress - either an address string or a dictionary containing latitude and longitude values
+     * @param {number} minDistance - minimum distance in km
+     * @param {number} maxDistance - maximum distance in km
      */
     constructor(destinationAddress, minDistance = 1, maxDistance = 2) {
         this.destinationAddress = destinationAddress;
@@ -17,8 +21,16 @@ export default class SearchParkingSlots {
         this.formattedSlots = null;
     }
 
+
+    /**
+     * Main function;
+     * Runs through the process of searching for nearby parking slots from a given address
+     * 
+     * @returns {Promise.<Array.<Object>>} - Array of nearby carpark objects
+     */
     async init() {
         if (typeof this.destinationAddress === "string") {
+            // If the destination address is a string, convert it to coordinates
             this.destinationAddress = await formatAddressToCoordinates(this.destinationAddress);
         }
 
@@ -30,7 +42,12 @@ export default class SearchParkingSlots {
 
 
     /**
-     * @returns {Array.<Object>} - Array of nearby carpark objects
+     * Searches for nearby parking slots from a given address, within a given range
+     * 
+     * @param {number} firstTrialRange - search range for the first trial in km
+     * @param {number} secondTrialRange - search range for the second trial in km
+     * 
+     * @returns {Promise.<Array.<Object>>} - Array of nearby carpark objects
      */
     async searchNearSlots(firstTrialRange, secondTrialRange) {
         const latitude = this.destinationAddress.latitude;
@@ -58,6 +75,12 @@ export default class SearchParkingSlots {
         // return filteredSlots;
     }
 
+
+    /**
+     * Reformats the parking slot data to the required format
+     * 
+     * @returns {Array.<Object>} - Array of nearby carpark objects
+     */
     reformatSlotData() {
         this.formattedSlots = this.nearbySlots.map((slot) => {
             const {

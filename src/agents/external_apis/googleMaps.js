@@ -24,8 +24,8 @@ export async function getCoordinatesGMaps(address) {
                 const longitude = data.results[0].geometry.location.lng;
                 return { latitude: latitude, longitude: longitude };
             } else {
-                console.log(address);
-                console.error(`GMaps Geocoding API error: ${data.status}`);
+                console.log(data);
+                console.error(`GMaps Geocoding API error: ${data.error_message}`);
                 return null;
             }
         })

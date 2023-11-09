@@ -1,12 +1,16 @@
+// googleMaps.js: Contains the functions that interacts with the Google Maps API.
+
 import fetch from "node-fetch";
 import polyline from "@mapbox/polyline";
 
 /**
+ * Geocodes the address using the Google Maps Geocoding API.
  *
- * @param {string} address - string of the address to be geocoded
- * @returns {Array.<number>} - array containing latitude and longitude values
+ * @param {string} address - String of the address to be geocoded
+ * 
+ * @returns {Promise.<Object>} - Dictionary containing the latitude and longitude values
  */
-export function getCoordinatesGMaps(address) {
+export async function getCoordinatesGMaps(address) {
     const apiKey = process.env.GMAPS_API_KEY;
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
         address
@@ -31,6 +35,15 @@ export function getCoordinatesGMaps(address) {
         });
 }
 
+
+/**
+ * Retrieves the routes between the origin and destination using the Google Maps Routing API.
+ * 
+ * @param {Object} origin - Dictionary containing the latitude and longitude values of the origin
+ * @param {Object} destination - Dictionary containing the latitude and longitude values of the destination
+ * 
+ * @returns {Promise<Object>} - Dictionary containing the array of coordinates that compose the routes, estimated distance and estimated time
+ */
 export async function getRoutesGMaps(origin, destination) {
     const apiKey = process.env.GMAPS_API_KEY;
     const apiURL = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`;
@@ -68,6 +81,15 @@ export async function getRoutesGMaps(origin, destination) {
         });
 }
 
+
+/**
+ * Retrieves the estimated time of arrival between the origin and destination using the Google Maps Distance Matrix API.
+ * 
+ * @param {Object} origin - Dictionary containing the latitude and longitude values of the origin
+ * @param {Object} destination - Dictionary containing the latitude and longitude values of the destination
+ * 
+ * @returns {Promise<string>} - String containing the ETA in the format of {hours}:{minutes}
+ */
 export async function getEtaGMaps(origin, destination) {
     const apiKey = process.env.GMAPS_API_KEY;
 

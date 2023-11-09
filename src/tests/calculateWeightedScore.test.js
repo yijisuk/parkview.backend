@@ -1,3 +1,5 @@
+// calculateWeightedScore.test.js: Contains test runs for calculateWeightedScore.js
+
 import { calculateWeightedScore } from "../apis/main/rankParkingSlots.js";
 
 describe("Test for calculateWeightedScore", () => {

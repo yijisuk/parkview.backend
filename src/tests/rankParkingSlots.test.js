@@ -1,3 +1,5 @@
+// rankParkingSlots.test.js: Contains test runs for rankParkingSlots.js
+
 import rankParkingSlots from "../apis/main/rankParkingSlots.js";
 
 //rankParkingSlots(destinationAddress, nearbySlots, preferences, eta)

@@ -1,5 +1,12 @@
-// TIME OPERATIONS
-// Function to convert 12-hour time format to 24-hour time format
+// timeOperations.js: Contains time operations functions
+
+/**
+ * Converts 12-hour time format to 24-hour time format
+ * 
+ * @param {string} timeStr - Time string in 12-hour format
+ * 
+ * @returns {string} - Time string in 24-hour format
+ */
 export function convertTo24Hour(timeStr) {
     const [time, period] = timeStr.split(" ");
     let [hours, minutes] = time.split(".");
@@ -13,7 +20,11 @@ export function convertTo24Hour(timeStr) {
 }
 
 
-// Function to get today's date
+/**
+ * Gets today's date
+ * 
+ * @returns {number} - Today's date
+ */
 export function getTodaysDate() {
     const today = new Date();
     return today.getDay();

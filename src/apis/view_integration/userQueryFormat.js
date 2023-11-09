@@ -1,3 +1,5 @@
+// userQueryFormat.js: Contains the functions for processing user queries
+
 import axios from "axios";
 import { getSignedUrlFromSupabase } from "../../agents/supabase/supabaseFunctions.js";
 import OpenAI from "openai";
@@ -5,11 +7,13 @@ import { whisperTranscription } from "../../agents/external_apis/speech_to_text/
 import { wav2vec2Transcription } from "../../agents/external_apis/speech_to_text/wav2vec2.js";
 
 /**
+ * Processes a user's voice query to text
  *
- * @param {string} model - model to be used for transcription
- * @param {string} uid - user id
- * @param {string} audioFileName - name of the audio file to be processed
- * @returns {string} - Returns the transcribed text of the audio file
+ * @param {string} model - Model to be used for transcription
+ * @param {string} uid - User id
+ * @param {string} audioFileName - Name of the audio file to be processed
+ * 
+ * @returns {string} - Transcribed text of the audio file
  */
 export async function processVoiceQueryToText(model, uid, audioFileName) {
     
@@ -32,6 +36,15 @@ export async function processVoiceQueryToText(model, uid, audioFileName) {
     }
 }
 
+
+/**
+ * Formats the destination address from the user's query
+ * 
+ * @param {string} model - Model to be used for transcription
+ * @param {string} query - Query to be processed
+ * 
+ * @returns {string} - Formatted destination address
+ */
 export async function extractDestinationFromQuery(model, query) {
     try {
         // Validate model

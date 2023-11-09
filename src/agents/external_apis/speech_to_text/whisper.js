@@ -1,10 +1,14 @@
+// whisper.js: Contains the function that transcribes audio files using the OpenAI whisper model.
+
 import { getSignedUrlFromSupabase } from "../../supabase/supabaseFunctions.js";
 
 /**
+ * Transcribes the audio file using the OpenAI whisper model.
  *
  * @param {string} uid - user id
  * @param {string} audioFileName - name of the audio file to be processed
- * @returns {string} - Returns the transcribed text of the audio file
+ * 
+ * @returns {Promise.<string>} - Returns the transcribed text of the audio file
  */
 export async function whisperTranscription(uid, audioFileName) {
 

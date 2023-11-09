@@ -1,3 +1,5 @@
+// rankByHourlyRate.js: Contains the wrapper class of functions that ranks the parking locations by hourly rate.
+
 import {
     getURAParkingRate,
     getHDBParkingRate,
@@ -7,6 +9,11 @@ import { scoreLocations } from "../utils/rankParkingSlotsUtils.js";
 
 export default class RankByHourlyRate {
     
+    /**
+     * 
+     * @param {Array<Object>} nearbySlots - Array of nearby carpark objects
+     * @param {string} eta - Estimated time of arrival to the destination
+     */
     constructor(nearbySlots, eta) {
         this.nearbySlots = nearbySlots;
         this.slotsCount = this.nearbySlots.length;
@@ -16,6 +23,13 @@ export default class RankByHourlyRate {
         this.eta = eta;
     }
 
+
+    /**
+     * Main function;
+     * Runs through the ranking & scoring process for the parking slots based on hourly rates
+     * 
+     * @returns {Promise.<Array.<Object>>} - Sorted & Scored array of nearby carpark objects based on hourly rates
+     */
     async init() {
 
         if (this.slotsCount === 0) {
@@ -31,6 +45,12 @@ export default class RankByHourlyRate {
         return this.scoredSlots;
     }
 
+
+    /**
+     * Loops through each parking location and retrieves the parking rate
+     * 
+     * @returns {Promise.<Array.<Object>>} - Array of nearby carpark objects with parking rates
+     */
     async organizeByParkingRates() {
         try {
             for (const slot of this.nearbySlots) {
@@ -61,6 +81,12 @@ export default class RankByHourlyRate {
         }
     }
 
+
+    /**
+     * Sorts the parking locations by hourly rates
+     * 
+     * @returns {Promise.<Array.<Object>>} - Sorted array of nearby carpark objects based on hourly rates
+     */
     async sortByHourlyRate() {
         this.rankedSlots = this.organizedSlots.sort((a, b) => {
             return b.parkingRate - a.parkingRate;

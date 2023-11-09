@@ -1,6 +1,16 @@
+// slotPreferenceManager.js: Contains the functions for database operations on user preferences for parking location recommendation criteria
+
 import supabase from "../../../config/supabase.js";
 
 
+/**
+ * Saves the preference data of a new user
+ * 
+ * @param {string} userID - User ID
+ * @param {Object} preference - Dictionary of preferences to save
+ * 
+ * @returns {Promise.<string>} - error message if any, empty string otherwise
+ */
 export async function addPreference(userID, preference) {
     const { error } = await supabase
         .from("preferences")
@@ -9,6 +19,15 @@ export async function addPreference(userID, preference) {
     return error;
 }
 
+
+/**
+ * Updates the preference data of a user
+ * 
+ * @param {string} userID - User ID
+ * @param {Object} preference - Dictionary of preferences to update
+ * 
+ * @returns {Promise.<string>} - error message if any, empty string otherwise
+ */
 export async function updatePreference(userID, preference) {
     const { error } = await supabase
         .from("preferences")
@@ -18,6 +37,14 @@ export async function updatePreference(userID, preference) {
     return error;
 }
 
+
+/**
+ * Retrieves the preference data of a user
+ * 
+ * @param {string} userID - User ID
+ * 
+ * @returns {Promise.<Object>} - Dictionary of preferences if any, null otherwise
+ */
 export async function getPreference(userID) {
     const { data, error } = await supabase
         .from("preferences")

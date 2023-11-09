@@ -1,8 +1,18 @@
+// parkingRates.js: Contains the functions that returns the parking rates for the specified carpark for a given time.
+
 import axios from "axios";
 import { convertTo24Hour, getTodaysDate } from "../../utils/timeOperations.js";
 
 
-// URA Parking Rates
+/**
+ * Retrieves the parking rate for the specified URA carpark provided for a given time.
+ * 
+ * @param {string} carParkID - Carpark code
+ * @param {string} eta - ETA in 24 hour format
+ * @param {boolean} overnight - Whether the parking is overnight
+ * 
+ * @returns {Promise.<number>} - Parking rate per hour
+ */
 export async function getURAParkingRate(carParkID, eta, overnight = false) {
 
     let parkingRatesData = null;
@@ -71,7 +81,14 @@ export async function getURAParkingRate(carParkID, eta, overnight = false) {
 }
 
 
-// HDB Parking Rates
+/**
+ * Retrieves the parking rate for the specified HDB carpark provided for a given time.
+ * 
+ * @param {string} carParkID - Carpark code
+ * @param {string} eta - ETA in 24 hour format
+ * 
+ * @returns {Promise.<number>} - Parking rate per hour
+ */
 export async function getHDBParkingRate(carParkID, eta) {
 
     const centralCarParks = [
@@ -128,5 +145,3 @@ export async function getHDBParkingRate(carParkID, eta) {
         return 1.2;
     }
 }
-
-// LTA Parking Rates

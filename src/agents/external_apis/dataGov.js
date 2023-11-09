@@ -1,6 +1,13 @@
+// dataGov.js: Contains the functions that interacts with the data.gov.sg API.
+
 import axios from "axios";
 
 
+/**
+ * Retrieves the 2 hour weather forecast across the whole of Singapore.
+ * 
+ * @returns {Promise.<Object>} - Dictionary containing the area metadata and the weather forecasts
+ */
 export async function get2HWeatherForecast() {
     
     let config = {

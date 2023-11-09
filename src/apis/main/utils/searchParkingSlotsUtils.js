@@ -1,3 +1,15 @@
+// searchParkingSlotUtils.js: Utility functions for searchParkingSlots.js
+
+
+/**
+ * Filters the parking locations by the maximum filter distance
+ * 
+ * @param {Array<Object>} locations - Array of carpark objects
+ * @param {string} currentLocation - Current location of the user: formatted as "${latitude} ${longitude}"
+ * @param {number} maxDistance - Maximum filter distance from the current location
+ * 
+ * @returns {Array<Object>} - Array of carpark objects within the maximum filter distance
+ */
 export function filterLocationsWithinDistance(
     locations,
     currentLocation,
@@ -16,6 +28,14 @@ export function filterLocationsWithinDistance(
 }
 
 
+/**
+ * Calculates the distance between two locations using the Haversine formula
+ * 
+ * @param {Array<number>} param0 - Array of latitude and longitude of location 1
+ * @param {Array<number>} param1 - Array of latitude and longitude of location 2
+ * 
+ * @returns {number} - Distance between the two locations in km
+ */
 function haversineDistance([lat1, lon1], [lat2, lon2]) {
     // Radius of the Earth in km
     const R = 6371;

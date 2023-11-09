@@ -1,9 +1,13 @@
+// alternativeGeoCoding.js: Contains the function that geocodes addresses using the geocode.maps.co API.
+// Built in case the Google Maps Geocoding API fails.
+
 import fetch from "node-fetch";
 
 /**
  *
  * @param {string} address - string of the address to be geocoded
- * @returns {Array.<number>} - array containing latitude and longitude values
+ * 
+ * @returns {Promise.<Object>} - array containing latitude and longitude values
  */
 export async function getCoordinatesFreeGeocoding(address) {
     const url = `https://geocode.maps.co/search?q=${encodeURIComponent(

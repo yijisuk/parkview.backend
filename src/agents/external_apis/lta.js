@@ -1,7 +1,9 @@
+// lta.js: Contains the functions that interacts with the LTA DataMall API.
 import axios from "axios";
 
 
 /**
+ * Retrieves the carpark availability across the whole of Singapore.
  * 
  * @returns {Promise.<Array.<Object>>} - Array of carpark objects, retrieved from the LTA DataMall API
  */

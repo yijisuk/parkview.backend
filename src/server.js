@@ -1,3 +1,5 @@
+// server.js: Contains the server code for the backend.
+
 import express from "express";
 import https from "https";
 import bodyParser from "body-parser";
@@ -35,10 +37,20 @@ app.use(cors());
 
 // ===== PARKING SLOTS & ROUTING ============================================================
 
-// API for getting the coordinates of the parking lot that:
-// - is closest to the destination
-// - most fits the user's preferences
-// GET: /getParkingCoordinates
+/**
+ * API for getting the coordinates of the parking lot that:
+ * - is closest to the destination
+ * - most fits the user's preferences
+ * 
+ * GET: /getParkingCoordinates
+ * 
+ * @param {string} userId - The user's ID.
+ * @param {string} originLat - The latitude of the user's origin. (will be parsed to float later)
+ * @param {string} originLon - The longitude of the user's origin. (will be parsed to float later)
+ * @param {string} destinationAddress - The user's destination address.
+ * 
+ * @returns {object} - Dictionary containing the parking slot details that best fits the user's preferences.
+ */
 app.get("/getParkingCoordinates", async (req, res) => {
     try {
         const { userId, originLat, originLon, destinationAddress } = req.query;
@@ -94,7 +106,15 @@ app.get("/getParkingCoordinates", async (req, res) => {
 });
 
 
-// GET: /getNearbyParkingSlots
+/**
+ * API for getting the details of parking slots that are within the 1 to 5km range of the user's origin.
+ * GET: /getNearbyParkingSlots
+ * 
+ * @param {string} latitude - The latitude of the user's origin. (will be parsed to float later)
+ * @param {string} longitude - The longitude of the user's origin. (will be parsed to float later)
+ * 
+ * @returns {object} - Dictionary containing the nearby parking slot details, within the 1 to 5km range.
+ */
 app.get("/getNearbyParkingSlots", async (req, res) => {
 
     try {
@@ -123,8 +143,19 @@ app.get("/getNearbyParkingSlots", async (req, res) => {
 });
 
 
-// APIs for Route Searching
-// GET: /getRoutes
+/**
+ * API for getting the routes between the user's origin and destination.
+ * Interacts with the Google Maps Directions API.
+ * 
+ * GET: /getRoutes
+ * 
+ * @param {string} originLat - The latitude of the user's origin. (will be parsed to float later)
+ * @param {string} originLon - The longitude of the user's origin. (will be parsed to float later)
+ * @param {string} destinationLat - The latitude of the user's destination. (will be parsed to float later)
+ * @param {string} destinationLon - The longitude of the user's destination. (will be parsed to float later)
+ * 
+ * @returns {object} - Dictionary containing the routes between the user's origin and destination.
+ */
 app.get("/getRoutes", async (req, res) => {
     try {
         const { originLat, originLon, destinationLat, destinationLon } =
@@ -175,8 +206,16 @@ app.get("/getRoutes", async (req, res) => {
 });
 
 
-// API for getting the coordinates for a given address
-// GET: /getCoordinates
+/**
+ * API for getting the coordinates for a given address.
+ * Interacts with the Google Maps Geocoding API.
+ * 
+ * GET: /getCoordinates
+ * 
+ * @param {string} address - The address to get the coordinates for.
+ * 
+ * @returns {object} - Dictionary containing the coordinates for the given address.
+ */
 app.get("/getCoordinates", async (req, res) => {
     try {
         const { address } = req.query;
@@ -207,8 +246,15 @@ app.get("/getCoordinates", async (req, res) => {
 
 // ===== FAVOURITE LOCATION ============================================================
 
-// APIs for managing favorite locations
-// GET: Get Fav Location
+/**
+ * API for getting the user's favourite location.
+ * 
+ * GET: /getFavouriteLocation
+ * 
+ * @param {string} id - The user's ID.
+ * 
+ * @returns {object} - Array containing the dictionaries containing the user's favourite location details.
+ */
 app.get("/getFavouriteLocation", jsonParser, async (req, res) => {
     try {
         //console.log(req.query);
@@ -228,7 +274,15 @@ app.get("/getFavouriteLocation", jsonParser, async (req, res) => {
 });
 
 
-// GET: Check Fav Location
+/**
+ * API for checking if a given location is the user's favourite location.
+ * 
+ * GET: /checkFavouriteLocation
+ * 
+ * @param {string} id - The user's ID.
+ * 
+ * @returns {object} - Boolean value indicating if the given location is the user's favourite location.
+ */
 app.get("/checkFavouriteLocation", jsonParser, async (req, res) => {
     try {
         //console.log(req.query);
@@ -255,7 +309,16 @@ app.get("/checkFavouriteLocation", jsonParser, async (req, res) => {
 });
 
 
-// POST: Add fav location
+/**
+ * API for adding a location to the user's favourite location.
+ * 
+ * POST: /addFavouriteLocation
+ * 
+ * @param {string} id - The user's ID.
+ * @param {string} location - The location to add to the user's favourite location.
+ * 
+ * @returns {object} - Boolean value indicating if the given location is the user's favourite location.
+ */
 app.post("/addFavouriteLocation", jsonParser, async (req, res) => {
     try {
         //console.log(req.query);
@@ -281,7 +344,16 @@ app.post("/addFavouriteLocation", jsonParser, async (req, res) => {
 });
 
 
-// DELETE: Delete fav loation
+/**
+ * API for deleting a location from the user's favourite location.
+ * 
+ * DELETE: /deleteFavouriteLocation
+ * 
+ * @param {string} id - The user's ID.
+ * @param {string} location - The location to delete from the user's favourite location.
+ * 
+ * @returns {object} - Boolean value indicating if the given location is the user's favourite location.
+ */
 app.delete("/deleteFavouriteLocation", jsonParser, async (req, res) => {
     try {
         //console.log(req.query);
@@ -306,7 +378,16 @@ app.delete("/deleteFavouriteLocation", jsonParser, async (req, res) => {
 
 // ===== SLOT RANKING CRITERIA PREFERENCE ============================================================
 
-// POST: Add Preference
+/**
+ * API for adding or updating a user's preference.
+ * 
+ * POST: /addPreference
+ * 
+ * @param {string} id - The user's ID.
+ * @param {string} preference - The user's preference.
+ * 
+ * @returns {object} - Error message if there is an error, else returns null.
+ */
 app.post("/addPreference", jsonParser, async (req, res) => {
 
     try {
@@ -323,8 +404,10 @@ app.post("/addPreference", jsonParser, async (req, res) => {
         let data = null;
 
         if (userPreference) {
+            // If user has existing preference, update it
             data = await updatePreference(id, preference);
         } else {
+            // Else, add new preference
             data = await addPreference(id, preference);
         }
 
@@ -339,7 +422,15 @@ app.post("/addPreference", jsonParser, async (req, res) => {
 });
 
 
-// GET: Get Preference
+/**
+ * API for getting a user's preference.
+ * 
+ * GET: /getPreference
+ * 
+ * @param {string} id - The user's ID.
+ * 
+ * @returns {object} - Dictionary containing the user's preference details.
+ */
 app.get("/getPreference", jsonParser, async (req, res) => {
     try {
         const { id } = req.query;
@@ -363,8 +454,16 @@ app.get("/getPreference", jsonParser, async (req, res) => {
 
 // ===== UTILS & TESTING =======================================================================
 
-// API for Voice Query Processing
-// GET: /processVoiceQuery
+/**
+ * API for processing a voice query to text, and extracting the destination from the text.
+ * 
+ * GET: /processVoiceQuery
+ * 
+ * @param {string} uid - The user's ID.
+ * @param {string} audioFileName - The name of the audio file containing the user's voice query.
+ * 
+ * @returns {object} - Dictionary containing the destination extracted from the user's voice query.
+ */
 app.get("/processVoiceQuery", async (req, res) => {
     try {
         const { uid, audioFileName } = req.query;
@@ -408,8 +507,10 @@ app.get("/processVoiceQuery", async (req, res) => {
 });
 
 
-// Test API
-// GET: /test
+/**
+ * API for testing purposes.
+ * Confirms whether the server is running.
+ */
 app.get("/test", async (req, res) => {
     try {
         console.log("Test GET request called.");
